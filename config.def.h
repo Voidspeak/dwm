@@ -66,6 +66,7 @@ static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
 static const char *termcmd[]  = { "konsole", NULL };
 static const char *lockcmd[]    = { "slock", NULL };
 //static const char *sleepcmd[]   = { "slock", "sudo", "/usr/sbin/s2ram", NULL };
+static const char *browsercmd[] = { "firefox", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -73,6 +74,7 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_F12,    spawn,          {.v = lockcmd } },
 //	{ MODKEY|ShiftMask,             XK_F12,    spawn,          {.v = sleepcmd } },
+	{ MODKEY|ShiftMask,             XK_F10,    spawn,          {.v = browsercmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
