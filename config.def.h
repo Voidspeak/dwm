@@ -78,6 +78,12 @@ static const char *browsercmd[] = { "firefox", NULL };
 #define DOWNVOL "/usr/bin/amixer -q -D pulse sset Master 5%-; "REFRESH_STATUS
 #define MUTEVOL "/usr/bin/amixer -q -D pulse sset Master toggle; "REFRESH_STATUS
 
+// Display switching
+#define DISPLAY_LAPTOP "/usr/local/bin/display-select laptop"
+#define DISPLAY_EXTERN "/usr/local/bin/display-select extern"
+#define DISPLAY_MIRROR "/usr/local/bin/display-select mirror"
+#define DISPLAY_EXTEND "/usr/local/bin/display-select extend"
+
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
@@ -124,6 +130,12 @@ static Key keys[] = {
 	{ MODKEY,                       XK_F3,                   spawn, SHCMD(UPVOL)   },
 	{ MODKEY,                       XK_F2,                   spawn, SHCMD(DOWNVOL) },
 	{ MODKEY,                       XK_F1,                   spawn, SHCMD(MUTEVOL) },
+
+	// Display switching
+	{ MODKEY|ShiftMask,             XK_F1,                   spawn, SHCMD(DISPLAY_LAPTOP) },
+	{ MODKEY|ShiftMask,             XK_F2,                   spawn, SHCMD(DISPLAY_EXTERN) },
+	{ MODKEY|ShiftMask,             XK_F3,                   spawn, SHCMD(DISPLAY_MIRROR) },
+	{ MODKEY|ShiftMask,             XK_F4,                   spawn, SHCMD(DISPLAY_EXTEND) },
 };
 
 /* button definitions */
