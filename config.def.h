@@ -88,6 +88,10 @@ static const char *browsercmd[] = { "firefox", NULL };
 #define NEXT_KB_LAYOUT "/usr/local/bin/keyboard-layout -n; "REFRESH_STATUS
 #define PREV_KB_LAYOUT "/usr/local/bin/keyboard-layout -p; "REFRESH_STATUS
 
+// Compositor
+#define ENABLE_COMPOSITOR "/usr/bin/picom -b"
+#define DISABLE_COMPOSITOR "/usr/bin/kill -9 picom"
+
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
@@ -144,6 +148,10 @@ static Key keys[] = {
 	// Keyboard layout
 	{ MODKEY,                       XK_Up,                   spawn, SHCMD(NEXT_KB_LAYOUT) },
 	{ MODKEY,                       XK_Down,                 spawn, SHCMD(PREV_KB_LAYOUT) },
+
+	// Compositor
+	{ MODKEY|ShiftMask,             XK_p,                    spawn, SHCMD(ENABLE_COMPOSITOR) },
+	{ MODKEY,                       XK_p,                    spawn, SHCMD(DISABLE_COMPOSITOR) },
 };
 
 /* button definitions */
