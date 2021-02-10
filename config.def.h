@@ -1,5 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
+#include <X11/XF86keysym.h>
+
 /* appearance */
 static const unsigned int borderpx  = 2;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
@@ -68,6 +70,14 @@ static const char *lockcmd[]    = { "slock", NULL };
 //static const char *sleepcmd[]   = { "slock", "sudo", "/usr/sbin/s2ram", NULL };
 static const char *browsercmd[] = { "firefox", NULL };
 
+// Refresh status
+#define REFRESH_STATUS "/usr/bin/kill -SIGUSR1 $(/usr/bin/ps -C slstatus -o pid=)"
+
+// Volume control
+#define UPVOL   "/usr/bin/amixer -q -D pulse sset Master 5%+ unmute; "REFRESH_STATUS
+#define DOWNVOL "/usr/bin/amixer -q -D pulse sset Master 5%-; "REFRESH_STATUS
+#define MUTEVOL "/usr/bin/amixer -q -D pulse sset Master toggle; "REFRESH_STATUS
+
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
@@ -106,6 +116,14 @@ static Key keys[] = {
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+
+	// Volume control
+	{ 0,                            XF86XK_AudioRaiseVolume, spawn, SHCMD(UPVOL)   },
+	{ 0,                            XF86XK_AudioLowerVolume, spawn, SHCMD(DOWNVOL) },
+	{ 0,                            XF86XK_AudioMute,        spawn, SHCMD(MUTEVOL) },
+	{ MODKEY,                       XK_F3,                   spawn, SHCMD(UPVOL)   },
+	{ MODKEY,                       XK_F2,                   spawn, SHCMD(DOWNVOL) },
+	{ MODKEY,                       XK_F1,                   spawn, SHCMD(MUTEVOL) },
 };
 
 /* button definitions */
