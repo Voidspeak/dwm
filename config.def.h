@@ -1,7 +1,9 @@
 /* See LICENSE file for copyright and license details. */
 
+#include <X11/XF86keysym.h>
+
 /* appearance */
-static const unsigned int borderpx  = 1;        /* border pixel of windows */
+static const unsigned int borderpx  = 2;        /* border pixel of windows */
 static const unsigned int gappx     = 14;       /* gaps between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int systraypinning = 0;   /* 0: sloppy systray follows selected monitor, >0: pin systray to monitor X */
@@ -10,17 +12,22 @@ static const int systraypinningfailfirst = 1;   /* 1: if pinning fails, display 
 static const int showsystray        = 1;     /* 0 means no systray */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "monospace:size=10" };
-static const char dmenufont[]       = "monospace:size=10";
+static const char *fonts[]          = {
+	"Iosevka:style=Regular:size=13",
+	"Font Awesome 5 Free,Font Awesome 5 Free Solid:style=Solid:pixelsize=16",
+	"Font Awesome 5 Free,Font Awesome 5 Free Regular:style=Regular:pixelsize=16",
+	"Font Awesome 5 Brands,Font Awesome 5 Brands Regular:style=Regular:pixelsize=16"
+};
+static const char dmenufont[]       = "monospace:size=14";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#005577";
+static const char col_burgundy[]    = "#76092a";
 static const char *colors[][3]      = {
-	/*               fg         bg         border   */
-	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+	/*               fg         bg            border   */
+	[SchemeNorm] = { col_gray3, col_gray1,    col_gray2 },
+	[SchemeSel]  = { col_gray4, col_burgundy, col_burgundy },
 };
 
 /* tagging */
@@ -31,9 +38,10 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title       tags mask     isfloating   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	/* class      instance    title           tags mask     isfloating   monitor */
+	{ "Steam",    NULL,       NULL,           1 << 8,       1,           -1 },
+	{ NULL,       NULL,       "Steam",        1 << 8,       1,           -1 },
+	{ "copyq",    NULL,       NULL,           0,            1,           -1 },
 };
 
 /* layout(s) */
@@ -49,7 +57,7 @@ static const Layout layouts[] = {
 };
 
 /* key definitions */
-#define MODKEY Mod1Mask
+#define MODKEY Mod4Mask
 #define TAGKEYS(KEY,TAG) \
 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
@@ -61,18 +69,48 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
-static const char *termcmd[]  = { "st", NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_burgundy, "-sf", col_gray4, NULL };
+static const char *termcmd[]  = { "konsole", NULL };
+static const char *lockcmd[]    = { "slock", NULL };
+//static const char *sleepcmd[]   = { "slock", "sudo", "/usr/sbin/s2ram", NULL };
+static const char *browsercmd[] = { "firefox", NULL };
+static const char *prtsccmd[] = { "spectacle", NULL };
+
+// Refresh status
+#define REFRESH_STATUS "/usr/bin/kill -SIGUSR1 $(/usr/bin/ps -C slstatus -o pid=)"
+
+// Volume control
+#define UPVOL   "/usr/bin/amixer -q -D pulse sset Master 5%+ unmute; "REFRESH_STATUS
+#define DOWNVOL "/usr/bin/amixer -q -D pulse sset Master 5%-; "REFRESH_STATUS
+#define MUTEVOL "/usr/bin/amixer -q -D pulse sset Master toggle; "REFRESH_STATUS
+
+// Display switching
+#define DISPLAY_LAPTOP "/usr/local/bin/display-select laptop"
+#define DISPLAY_EXTERN "/usr/local/bin/display-select extern"
+#define DISPLAY_MIRROR "/usr/local/bin/display-select mirror"
+#define DISPLAY_EXTEND "/usr/local/bin/display-select extend"
+
+// Keyboard layout switching
+#define NEXT_KB_LAYOUT "/usr/local/bin/keyboard-layout -n; "REFRESH_STATUS
+#define PREV_KB_LAYOUT "/usr/local/bin/keyboard-layout -p; "REFRESH_STATUS
+
+// Compositor
+#define ENABLE_COMPOSITOR "/usr/bin/picom -b"
+#define DISABLE_COMPOSITOR "/usr/bin/kill -9 picom"
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
+	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
+	{ MODKEY,                       XK_F12,    spawn,          {.v = lockcmd } },
+//	{ MODKEY|ShiftMask,             XK_F12,    spawn,          {.v = sleepcmd } },
+	{ MODKEY|ShiftMask,             XK_F10,    spawn,          {.v = browsercmd } },
+	{ MODKEY|ShiftMask,             XK_Print,  spawn,          {.v = prtsccmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
-	{ MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
+	{ MODKEY,                       XK_u,      incnmaster,     {.i = -1 } },
 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 	{ MODKEY,                       XK_Return, zoom,           {0} },
@@ -102,6 +140,28 @@ static Key keys[] = {
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+
+	// Volume control
+	{ 0,                            XF86XK_AudioRaiseVolume, spawn, SHCMD(UPVOL)   },
+	{ 0,                            XF86XK_AudioLowerVolume, spawn, SHCMD(DOWNVOL) },
+	{ 0,                            XF86XK_AudioMute,        spawn, SHCMD(MUTEVOL) },
+	{ MODKEY,                       XK_F3,                   spawn, SHCMD(UPVOL)   },
+	{ MODKEY,                       XK_F2,                   spawn, SHCMD(DOWNVOL) },
+	{ MODKEY,                       XK_F1,                   spawn, SHCMD(MUTEVOL) },
+
+	// Display switching
+	{ MODKEY|ShiftMask,             XK_F1,                   spawn, SHCMD(DISPLAY_LAPTOP) },
+	{ MODKEY|ShiftMask,             XK_F2,                   spawn, SHCMD(DISPLAY_EXTERN) },
+	{ MODKEY|ShiftMask,             XK_F3,                   spawn, SHCMD(DISPLAY_MIRROR) },
+	{ MODKEY|ShiftMask,             XK_F4,                   spawn, SHCMD(DISPLAY_EXTEND) },
+
+	// Keyboard layout
+	{ MODKEY,                       XK_Up,                   spawn, SHCMD(NEXT_KB_LAYOUT) },
+	{ MODKEY,                       XK_Down,                 spawn, SHCMD(PREV_KB_LAYOUT) },
+
+	// Compositor
+	{ MODKEY|ShiftMask,             XK_p,                    spawn, SHCMD(ENABLE_COMPOSITOR) },
+	{ MODKEY,                       XK_p,                    spawn, SHCMD(DISABLE_COMPOSITOR) },
 };
 
 /* button definitions */
