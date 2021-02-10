@@ -69,6 +69,7 @@ static const char *termcmd[]  = { "konsole", NULL };
 static const char *lockcmd[]    = { "slock", NULL };
 //static const char *sleepcmd[]   = { "slock", "sudo", "/usr/sbin/s2ram", NULL };
 static const char *browsercmd[] = { "firefox", NULL };
+static const char *prtsccmd[] = { "spectacle", NULL };
 
 // Refresh status
 #define REFRESH_STATUS "/usr/bin/kill -SIGUSR1 $(/usr/bin/ps -C slstatus -o pid=)"
@@ -99,6 +100,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_F12,    spawn,          {.v = lockcmd } },
 //	{ MODKEY|ShiftMask,             XK_F12,    spawn,          {.v = sleepcmd } },
 	{ MODKEY|ShiftMask,             XK_F10,    spawn,          {.v = browsercmd } },
+	{ MODKEY|ShiftMask,             XK_Print,  spawn,          {.v = prtsccmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
