@@ -84,6 +84,10 @@ static const char *browsercmd[] = { "firefox", NULL };
 #define DISPLAY_MIRROR "/usr/local/bin/display-select mirror"
 #define DISPLAY_EXTEND "/usr/local/bin/display-select extend"
 
+// Keyboard layout switching
+#define NEXT_KB_LAYOUT "/usr/local/bin/keyboard-layout -n; "REFRESH_STATUS
+#define PREV_KB_LAYOUT "/usr/local/bin/keyboard-layout -p; "REFRESH_STATUS
+
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
@@ -136,6 +140,10 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_F2,                   spawn, SHCMD(DISPLAY_EXTERN) },
 	{ MODKEY|ShiftMask,             XK_F3,                   spawn, SHCMD(DISPLAY_MIRROR) },
 	{ MODKEY|ShiftMask,             XK_F4,                   spawn, SHCMD(DISPLAY_EXTEND) },
+
+	// Keyboard layout
+	{ MODKEY,                       XK_Up,                   spawn, SHCMD(NEXT_KB_LAYOUT) },
+	{ MODKEY,                       XK_Down,                 spawn, SHCMD(PREV_KB_LAYOUT) },
 };
 
 /* button definitions */
