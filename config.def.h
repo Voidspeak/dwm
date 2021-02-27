@@ -14,10 +14,10 @@ static const int swallowfloating    = 0;        /* 1 means swallow floating wind
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = {
-	"Iosevka:style=Regular:size=13",
-	"Font Awesome 5 Free,Font Awesome 5 Free Solid:style=Solid:pixelsize=16",
-	"Font Awesome 5 Free,Font Awesome 5 Free Regular:style=Regular:pixelsize=16",
-	"Font Awesome 5 Brands,Font Awesome 5 Brands Regular:style=Regular:pixelsize=16"
+	"Iosevka:style=Regular:size=12",
+	"Font Awesome 5 Free,Font Awesome 5 Free Solid:style=Solid:pixelsize=15",
+	"Font Awesome 5 Free,Font Awesome 5 Free Regular:style=Regular:pixelsize=15",
+	"Font Awesome 5 Brands,Font Awesome 5 Brands Regular:style=Regular:pixelsize=15"
 };
 static const char dmenufont[]       = "monospace:size=14";
 static const char col_gray1[]       = "#222222";
