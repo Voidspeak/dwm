@@ -80,7 +80,7 @@ static const char *prtsccmd[] = { "spectacle", NULL };
 #define MUTE_VOL "/usr/bin/pamixer --toggle-mute; "REFRESH_STATUS
 
 // Microphone control
-#define TOGGLE_MIC "/usr/bin/mic-toggle"
+#define TOGGLE_MIC "/usr/local/bin/mic-toggle; "REFRESH_STATUS
 
 // Display switching
 #define DISPLAY_LAPTOP "/usr/local/bin/display-select laptop"
