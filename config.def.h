@@ -88,6 +88,10 @@ static const char *prtsccmd[] = { "spectacle", NULL };
 #define DISPLAY_MIRROR "/usr/local/bin/display-select mirror"
 #define DISPLAY_EXTEND "/usr/local/bin/display-select extend"
 
+// Backlight control
+#define INC_BACKLIGHT "/usr/bin/backlight_control +10"
+#define DEC_BACKLIGHT "/usr/bin/backlight_control -10"
+
 // Keyboard layout switching
 #define NEXT_KB_LAYOUT "/usr/local/bin/keyboard-layout -n; "REFRESH_STATUS
 #define PREV_KB_LAYOUT "/usr/local/bin/keyboard-layout -p; "REFRESH_STATUS
@@ -153,6 +157,10 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_F2,                   spawn, SHCMD(DISPLAY_EXTERN) },
 	{ MODKEY|ShiftMask,             XK_F3,                   spawn, SHCMD(DISPLAY_MIRROR) },
 	{ MODKEY|ShiftMask,             XK_F4,                   spawn, SHCMD(DISPLAY_EXTEND) },
+
+	// Backlight control
+	{ MODKEY,                       XK_F6,                   spawn, SHCMD(INC_BACKLIGHT) },
+	{ MODKEY,                       XK_F5,                   spawn, SHCMD(DEC_BACKLIGHT) },
 
 	// Keyboard layout
 	{ MODKEY,                       XK_Up,                   spawn, SHCMD(NEXT_KB_LAYOUT) },
