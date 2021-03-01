@@ -72,12 +72,15 @@ static const char *browsercmd[] = { "firefox", NULL };
 static const char *prtsccmd[] = { "spectacle", NULL };
 
 // Refresh status
-#define REFRESH_STATUS "/usr/bin/kill -SIGUSR1 $(/usr/bin/ps -C slstatus -o pid=)"
+#define REFRESH_STATUS "/usr/local/bin/slstatus-refresh"
 
 // Volume control
-#define UPVOL   "/usr/bin/amixer -q -D pulse sset Master 5%+ unmute; "REFRESH_STATUS
-#define DOWNVOL "/usr/bin/amixer -q -D pulse sset Master 5%-; "REFRESH_STATUS
-#define MUTEVOL "/usr/bin/amixer -q -D pulse sset Master toggle; "REFRESH_STATUS
+#define INC_VOL   "/usr/bin/pamixer --increase 5 --unmute; "REFRESH_STATUS
+#define DEC_VOL "/usr/bin/pamixer --decrease 5; "REFRESH_STATUS
+#define MUTE_VOL "/usr/bin/pamixer --toggle-mute; "REFRESH_STATUS
+
+// Microphone control
+#define TOGGLE_MIC "/usr/bin/mic-toggle"
 
 // Display switching
 #define DISPLAY_LAPTOP "/usr/local/bin/display-select laptop"
@@ -134,12 +137,16 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
 
 	// Volume control
-	{ 0,                            XF86XK_AudioRaiseVolume, spawn, SHCMD(UPVOL)   },
-	{ 0,                            XF86XK_AudioLowerVolume, spawn, SHCMD(DOWNVOL) },
-	{ 0,                            XF86XK_AudioMute,        spawn, SHCMD(MUTEVOL) },
-	{ MODKEY,                       XK_F3,                   spawn, SHCMD(UPVOL)   },
-	{ MODKEY,                       XK_F2,                   spawn, SHCMD(DOWNVOL) },
-	{ MODKEY,                       XK_F1,                   spawn, SHCMD(MUTEVOL) },
+	{ 0,                            XF86XK_AudioRaiseVolume, spawn, SHCMD(INC_VOL) },
+	{ 0,                            XF86XK_AudioLowerVolume, spawn, SHCMD(DEC_VOL) },
+	{ 0,                            XF86XK_AudioMute,        spawn, SHCMD(MUTE_VOL) },
+	{ MODKEY,                       XK_F3,                   spawn, SHCMD(INC_VOL) },
+	{ MODKEY,                       XK_F2,                   spawn, SHCMD(DEC_VOL) },
+	{ MODKEY,                       XK_F1,                   spawn, SHCMD(MUTE_VOL) },
+
+	// Microphone control
+	{ 0,                            XF86XK_AudioMicMute,     spawn, SHCMD(TOGGLE_MIC) },
+	{ MODKEY,                       XK_F4,                   spawn, SHCMD(TOGGLE_MIC) },
 
 	// Display switching
 	{ MODKEY|ShiftMask,             XK_F1,                   spawn, SHCMD(DISPLAY_LAPTOP) },
