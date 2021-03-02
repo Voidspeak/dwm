@@ -28,6 +28,7 @@ static const char col_burgundy[]    = "#76092a";
 static const char *colors[][3]      = {
 	/*               fg         bg            border   */
 	[SchemeNorm] = { col_gray3, col_gray1,    col_gray2 },
+	[SchemeInv]  = { col_gray1, col_gray3,    col_gray2 },
 	[SchemeSel]  = { col_gray4, col_burgundy, col_burgundy },
 };
 
