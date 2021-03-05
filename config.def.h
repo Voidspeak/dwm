@@ -33,10 +33,11 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title           tags mask     isfloating   monitor */
-	{ "Steam",    NULL,       NULL,           1 << 8,       1,           -1 },
-	{ NULL,       NULL,       "Steam",        1 << 8,       1,           -1 },
-	{ "copyq",    NULL,       NULL,           0,            1,           -1 },
+	/* class       instance    title           tags mask     isfloating   monitor */
+	{ "Steam",     NULL,       NULL,           1 << 8,       1,           -1 },
+	{ NULL,        NULL,       "Steam",        1 << 8,       1,           -1 },
+	{ "copyq",     NULL,       NULL,           0,            1,           -1 },
+	{ "spectacle", NULL,       NULL,           1 << 6,       1,           -1 },
 };
 
 /* layout(s) */
@@ -62,43 +63,31 @@ static const Layout layouts[] = {
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
+#define REFRESH_STATUS "killall -s USR1 slstatus"
+
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_burgundy, "-sf", col_gray4, NULL };
-static const char *termcmd[]  = { "konsole", NULL };
-static const char *lockcmd[]    = { "slock", NULL };
-//static const char *sleepcmd[]   = { "slock", "sudo", "/usr/sbin/s2ram", NULL };
-static const char *browsercmd[] = { "firefox", NULL };
-static const char *prtsccmd[] = { "spectacle", NULL };
-
-// Refresh status
-#define REFRESH_STATUS "/usr/local/bin/slstatus-refresh"
-
-// Volume control
-#define INC_VOL   "/usr/bin/pamixer --increase 5 --unmute; "REFRESH_STATUS
-#define DEC_VOL "/usr/bin/pamixer --decrease 5; "REFRESH_STATUS
-#define MUTE_VOL "/usr/bin/pamixer --toggle-mute; "REFRESH_STATUS
-
-// Microphone control
-#define TOGGLE_MIC "/usr/local/bin/mic-toggle; "REFRESH_STATUS
-
-// Display switching
-#define DISPLAY_LAPTOP "/usr/local/bin/display-select laptop"
-#define DISPLAY_EXTERN "/usr/local/bin/display-select extern"
-#define DISPLAY_MIRROR "/usr/local/bin/display-select mirror"
-#define DISPLAY_EXTEND "/usr/local/bin/display-select extend"
-
-// Backlight control
-#define INC_BACKLIGHT "/usr/bin/backlight_control +10"
-#define DEC_BACKLIGHT "/usr/bin/backlight_control -10"
-
-// Keyboard layout switching
-#define NEXT_KB_LAYOUT "/usr/local/bin/keyboard-layout -n; "REFRESH_STATUS
-#define PREV_KB_LAYOUT "/usr/local/bin/keyboard-layout -p; "REFRESH_STATUS
-
-// Compositor
-#define ENABLE_COMPOSITOR "/usr/bin/picom -b"
-#define DISABLE_COMPOSITOR "/usr/bin/kill -9 picom"
+static const char *dmenucmd[]     = { "dmenu_run", "-l", "10", "-i", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_burgundy, "-sf", col_gray4, NULL };
+static const char *termcmd[]      = { "konsole", NULL };
+static const char *lockcmd[]      = { "slock", NULL };
+//static const char *sleepcmd[]     = { "slock", "sudo", "/usr/sbin/s2ram", NULL };
+static const char *browsercmd[]   = { "firefox", NULL };
+static const char *prtsccmd[]     = { "spectacle", NULL };
+static const char *componcmd[]    = { "picom", "-b", NULL };
+static const char *compoffcmd[]   = { "killall", "-s", "9", "picom", NULL };
+static const char *dlaptopcmd[]   = { "display-select", "laptop", NULL };
+static const char *dexterncmd[]   = { "display-select", "extern", NULL };
+static const char *dmirrorcmd[]   = { "display-select", "mirror", NULL };
+static const char *dextendcmd[]   = { "display-select", "extend", NULL };
+static const char *backlupcmd[]   = { "backlight-control", "-i", "10", NULL };
+static const char *backldowncmd[] = { "backlight-control", "-d", "10", NULL };
+static const char *volupcmd[]     = { "/bin/sh", "-c", "volume-control -i 5; "REFRESH_STATUS, NULL };
+static const char *voldowncmd[]   = { "/bin/sh", "-c", "volume-control -d 5; "REFRESH_STATUS, NULL };
+static const char *voltogcmd[]    = { "/bin/sh", "-c", "volume-control -t; "REFRESH_STATUS, NULL };
+static const char *mictogcmd[]    = { "/bin/sh", "-c", "mic-control -t; "REFRESH_STATUS, NULL };
+static const char *camtogcmd[]    = { "/bin/sh", "-c", "cam-control -t; "REFRESH_STATUS, NULL };
+static const char *kblayncmd[]    = { "/bin/sh", "-c", "keyboard-layout -n; "REFRESH_STATUS, NULL };
+static const char *kblaypcmd[]    = { "/bin/sh", "-c", "keyboard-layout -p; "REFRESH_STATUS, NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -106,8 +95,8 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_F12,    spawn,          {.v = lockcmd } },
 //	{ MODKEY|ShiftMask,             XK_F12,    spawn,          {.v = sleepcmd } },
-	{ MODKEY|ShiftMask,             XK_F10,    spawn,          {.v = browsercmd } },
-	{ MODKEY|ShiftMask,             XK_Print,  spawn,          {.v = prtsccmd } },
+	{ MODKEY|ShiftMask,             XK_w,      spawn,          {.v = browsercmd } },
+	{ 0,                            XK_Print,  spawn,          {.v = prtsccmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
@@ -138,37 +127,41 @@ static Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
-	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+	{ MODKEY|ShiftMask,             XK_Delete, quit,           {0} },
 
 	// Volume control
-	{ 0,                            XF86XK_AudioRaiseVolume, spawn, SHCMD(INC_VOL) },
-	{ 0,                            XF86XK_AudioLowerVolume, spawn, SHCMD(DEC_VOL) },
-	{ 0,                            XF86XK_AudioMute,        spawn, SHCMD(MUTE_VOL) },
-	{ MODKEY,                       XK_F3,                   spawn, SHCMD(INC_VOL) },
-	{ MODKEY,                       XK_F2,                   spawn, SHCMD(DEC_VOL) },
-	{ MODKEY,                       XK_F1,                   spawn, SHCMD(MUTE_VOL) },
+	{ 0,                            XF86XK_AudioRaiseVolume, spawn, {.v = volupcmd } },
+	{ 0,                            XF86XK_AudioLowerVolume, spawn, {.v = voldowncmd } },
+	{ 0,                            XF86XK_AudioMute,        spawn, {.v = voltogcmd } },
+	{ MODKEY,                       XK_F3,                   spawn, {.v = volupcmd } },
+	{ MODKEY,                       XK_F2,                   spawn, {.v = voldowncmd } },
+	{ MODKEY,                       XK_F1,                   spawn, {.v = voltogcmd } },
 
 	// Microphone control
-	{ 0,                            XF86XK_AudioMicMute,     spawn, SHCMD(TOGGLE_MIC) },
-	{ MODKEY,                       XK_F4,                   spawn, SHCMD(TOGGLE_MIC) },
+	{ 0,                            XF86XK_AudioMicMute,     spawn, {.v = mictogcmd } },
+	{ MODKEY,                       XK_F4,                   spawn, {.v = mictogcmd } },
+
+	// Camera control
+	{ 0,                            XF86XK_WebCam,           spawn, {.v = camtogcmd } },
+	{ MODKEY,                       XK_F10,                  spawn, {.v = camtogcmd } },
 
 	// Display switching
-	{ MODKEY|ShiftMask,             XK_F1,                   spawn, SHCMD(DISPLAY_LAPTOP) },
-	{ MODKEY|ShiftMask,             XK_F2,                   spawn, SHCMD(DISPLAY_EXTERN) },
-	{ MODKEY|ShiftMask,             XK_F3,                   spawn, SHCMD(DISPLAY_MIRROR) },
-	{ MODKEY|ShiftMask,             XK_F4,                   spawn, SHCMD(DISPLAY_EXTEND) },
+	{ MODKEY|ShiftMask,             XK_F1,                   spawn, {.v = dlaptopcmd } },
+	{ MODKEY|ShiftMask,             XK_F2,                   spawn, {.v = dexterncmd } },
+	{ MODKEY|ShiftMask,             XK_F3,                   spawn, {.v = dmirrorcmd } },
+	{ MODKEY|ShiftMask,             XK_F4,                   spawn, {.v = dextendcmd } },
 
 	// Backlight control
-	{ MODKEY,                       XK_F6,                   spawn, SHCMD(INC_BACKLIGHT) },
-	{ MODKEY,                       XK_F5,                   spawn, SHCMD(DEC_BACKLIGHT) },
+	{ MODKEY,                       XK_F6,                   spawn, {.v = backlupcmd } },
+	{ MODKEY,                       XK_F5,                   spawn, {.v = backldowncmd } },
 
 	// Keyboard layout
-	{ MODKEY,                       XK_Up,                   spawn, SHCMD(NEXT_KB_LAYOUT) },
-	{ MODKEY,                       XK_Down,                 spawn, SHCMD(PREV_KB_LAYOUT) },
+	{ MODKEY,                       XK_Up,                   spawn, {.v = kblayncmd } },
+	{ MODKEY,                       XK_Down,                 spawn, {.v = kblaypcmd } },
 
 	// Compositor
-	{ MODKEY|ShiftMask,             XK_p,                    spawn, SHCMD(ENABLE_COMPOSITOR) },
-	{ MODKEY,                       XK_p,                    spawn, SHCMD(DISABLE_COMPOSITOR) },
+	{ MODKEY|ShiftMask,             XK_p,                    spawn, {.v = componcmd } },
+	{ MODKEY,                       XK_p,                    spawn, {.v = compoffcmd } },
 };
 
 /* button definitions */
