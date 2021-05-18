@@ -38,6 +38,7 @@ static const Rule rules[] = {
 	{ NULL,        NULL,       "Steam",        1 << 8,       1,           -1 },
 	{ "copyq",     NULL,       NULL,           0,            1,           -1 },
 	{ "spectacle", NULL,       NULL,           1 << 6,       1,           -1 },
+	{ "Anydesk",   NULL,       NULL,           1 << 5,       0,           -1 },
 };
 
 /* layout(s) */
