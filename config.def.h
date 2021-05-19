@@ -13,6 +13,7 @@ static const int showsystray        = 1;     /* 0 means no systray */
 static const int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
+static const int focusonwheel       = 0;
 static const char *fonts[]          = {
 	"Iosevka:style=Regular:size=13",
 	"Font Awesome 5 Free,Font Awesome 5 Free Solid:style=Solid:pixelsize=16",
