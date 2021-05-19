@@ -47,6 +47,7 @@ static const Rule rules[] = {
 	{ "copyq",     NULL,     NULL,           0,         1,          0,          1,         -1 },
 	{ "konsole",   NULL,     NULL,           0,         0,          1,          0,         -1 },
 	{ "spectacle", NULL,     NULL,           1 << 6,    1,          0,          1,         -1 },
+	{ "Anydesk",   NULL,     NULL,           1 << 5,    0,          0,          0,         -1 },
 };
 
 /* layout(s) */
