@@ -98,6 +98,12 @@ static const char *mictogcmd[]    = { "/bin/sh", "-c", "mic-control -t; "REFRESH
 static const char *camtogcmd[]    = { "/bin/sh", "-c", "cam-control -t; "REFRESH_STATUS, NULL };
 static const char *kblayncmd[]    = { "/bin/sh", "-c", "keyboard-layout -n; "REFRESH_STATUS, NULL };
 static const char *kblaypcmd[]    = { "/bin/sh", "-c", "keyboard-layout -p; "REFRESH_STATUS, NULL };
+static const char *mpdstopcmd[]   = { "mpc", "stop", NULL };
+static const char *mpdprevcmd[]   = { "mpc", "prev", NULL };
+static const char *mpdnextcmd[]   = { "mpc", "next", NULL };
+static const char *mpdtogcmd[]    = { "mpc", "toggle", NULL };
+static const char *mpdclientcmd[] = { "alacritty", "-e", "ncmpcpp", NULL };
+static const char *mpdvisualcmd[] = { "alacritty", "-o", "font.size=4", "-e", "cava", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -165,8 +171,8 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_F4,                   spawn, {.v = dextendcmd } },
 
 	// Backlight control
-	{ MODKEY,                       XK_F6,                   spawn, {.v = backlupcmd } },
-	{ MODKEY,                       XK_F5,                   spawn, {.v = backldowncmd } },
+	{ MODKEY|ControlMask,           XK_F3,                   spawn, {.v = backlupcmd } },
+	{ MODKEY|ControlMask,           XK_F2,                   spawn, {.v = backldowncmd } },
 
 	// Keyboard layout
 	{ MODKEY,                       XK_Up,                   spawn, {.v = kblayncmd } },
@@ -175,6 +181,16 @@ static Key keys[] = {
 	// Compositor
 	{ MODKEY|ShiftMask,             XK_p,                    spawn, {.v = componcmd } },
 	{ MODKEY,                       XK_p,                    spawn, {.v = compoffcmd } },
+
+	// Music Player Daemon control
+	{ MODKEY,                       XK_F5,                   spawn, {.v = mpdstopcmd } },
+	{ MODKEY,                       XK_F6,                   spawn, {.v = mpdprevcmd } },
+	{ MODKEY,                       XK_F7,                   spawn, {.v = mpdtogcmd } },
+	{ MODKEY,                       XK_F8,                   spawn, {.v = mpdnextcmd } },
+
+	// Music Player Daemon client
+	{ MODKEY|ShiftMask,             XK_F5,                   spawn, {.v = mpdclientcmd } },
+	{ MODKEY|ShiftMask,             XK_F6,                   spawn, {.v = mpdvisualcmd } },
 };
 
 /* button definitions */
